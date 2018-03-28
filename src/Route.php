@@ -5,7 +5,7 @@ namespace Routerion;
 use Exception;
 use Closure;
 
-class Router
+class Route
 {
 
     /**
