@@ -18,8 +18,12 @@ A simple, fast and powerful PHP router
 ```htaccess
 Options +FollowSymLinks
 RewriteEngine On
-RewriteRule ^(.*)$ index.php [NC,L]
 
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
+
+RewriteRule ^(.*)$ index.php [NC,L]
 ```
 
 3. Create `config.php` file or add following `PHP Constants` to your configuration file:
