@@ -71,3 +71,8 @@ $route -> run();
 ### Controllers
 
 Controller files are located in `Controllers` directory. Edit `config.php` file if you have different controllers directory.
+
+
+## License
+
+MIT Licensed, <http://www.opensource.org/licenses/MIT>
