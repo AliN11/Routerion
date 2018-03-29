@@ -1,6 +1,6 @@
 # Routerion - PHP Router
 
-A simple and and powerful PHP router
+A simple, fast and powerful PHP router
 
 * Define routes easily
 * Dynamic route parameters
