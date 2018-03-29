@@ -66,7 +66,7 @@ class Route
 
 
     /**
-     * Trim preceding slash from url
+     * Remove beggining slash from url
      *
      * @param string $url
      *
@@ -79,7 +79,7 @@ class Route
 
 
     /**
-     * Validate route method
+     * Validate defined route method
      *
      * @param string $name
      * @param array $arguments
@@ -110,7 +110,7 @@ class Route
 
 
     /**
-     * Start find matching route with request url
+     * Start to find matching route with request url
      *
      * @throws Exception on invalid route action
      *
@@ -121,13 +121,8 @@ class Route
         $requested_url = explode('/', $this -> requestUrl);
 
         if(!empty($this -> definedRoutes[$this -> requestMethod])){
+
             foreach($this -> definedRoutes[$this -> requestMethod] as $route => $action) {
-
-                // If requested url matches with any defined routes, stop the operation
-                if($this -> matched) {
-                    break;
-                }
-
                 $route = explode('/', $route);
                 $route_depth = count($route);
 
@@ -164,6 +159,7 @@ class Route
                     }
                     else throw new Exception('Invalid action for route');
 
+                    // Route found, stop the operations
                     break;
                 }
                 else {

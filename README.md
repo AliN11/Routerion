@@ -6,7 +6,7 @@ A simple, fast and powerful PHP router
 * Dynamic route parameters
 * Supports various HTTP methods
 
-## Installition
+## Installation
 
 1. You can install Routerion with composer:
 
@@ -16,7 +16,6 @@ A simple, fast and powerful PHP router
 2. Create a `.htaccess` file on the root directory:
 
 ```htaccess
-
 Options +FollowSymLinks
 RewriteEngine On
 RewriteRule ^(.*)$ index.php [NC,L]
@@ -26,11 +25,9 @@ RewriteRule ^(.*)$ index.php [NC,L]
 3. Create `config.php` file or add following `PHP Constants` to your configuration file:
 
 ```php
-
 <?php
 define('CONTROLLER_PATH', __DIR__ . '\Controllers');
 define('CONTROLLER_NAMESPACE', '\Controllers');
-
 ```
 
 ## Usage
@@ -38,7 +35,6 @@ define('CONTROLLER_NAMESPACE', '\Controllers');
 Let's define our routes. To define routes create a `index.php` file on the root directory if not exists, or create a `routes.php` file and include it into `index.php` file:
 
 ```php
-
 <?php
 
 include 'config.php';
@@ -64,13 +60,12 @@ $route -> get('closure-with-parameters/{required}/{optional?}', function($requir
 });
 
 $route -> run();
-
 ```
 
 
 ### Controllers
 
-Controller files are located in `Controllers` directory. Edit `config.php` file if you have different controllers directory.
+Controller files are located in `Controllers` directory. Edit `config.php` constants if you have different controllers directory or namespace.
 
 
 ## License
