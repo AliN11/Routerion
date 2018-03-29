@@ -45,9 +45,9 @@ $route = new Routerion\Route;
 
 $route -> get('/', 'HomeController@index');
 $route -> get('/users', 'Auth\UsersController@index');
-$route -> put('/get-user-info/{id}', 'Auth\UsersController@getUserInfo');
 $route -> get('/users/{name}/{age?}', 'Auth\UsersController@single');
 
+$route -> post('/get-user-info/{id}', 'Auth\UsersController@getUserInfo');
 
 $route -> get('closure', function(){
   echo 'This is closure';
