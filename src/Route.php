@@ -1,7 +1,6 @@
-<?php
+<?php namespace Routerion;
 
-namespace Routerion;
-
+use Routerion\Contracts\ExceptionsInterface;
 use Exception;
 use Closure;
 
@@ -44,10 +43,15 @@ class Route
     public $matched = false;
 
     /**
+     * @var \Routerion\Contracts\ExceptionsInterface
+     */
+    public $exception;
+
+    /**
      * Hold parameters of current checking route
      * @var array
      */
-    private $requestParameters = [];
+    public $requestParameters = [];
 
     /**
      * Get the requested url and validate it
@@ -55,8 +59,9 @@ class Route
      * @return void
      */
 
-    public function __construct()
+    public function __construct(ExceptionsInterface $exception)
     {
+        $this -> exception = $exception;
         $current_dir = dirname($_SERVER['SCRIPT_NAME']);
 
         // Remove query string
@@ -169,8 +174,7 @@ class Route
         }
 
         if($this -> matched === false){
-            echo '<h1>404 Not Found</h1>';
-            header('HTTP/1.0 404 Not Found');
+            return $this -> exception -> notFound();
         }
     }
 
