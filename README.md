@@ -5,6 +5,7 @@ A simple, fast and powerful PHP router
 * Define routes easily
 * Dynamic route parameters
 * Supports various HTTP methods
+* REST API Support
 
 ## Installation
 
@@ -41,10 +42,10 @@ Let's define our routes. To define routes create a `index.php` file on the root 
 ```php
 <?php
 
-include 'config.php';
+require 'config.php';
 require __DIR__.'/vendor/autoload.php';
 
-$route = new Routerion\Route;
+$route = new Routerion\Route(new Routerion\Exceptions\APIException);
 
 
 $route -> get('/', 'HomeController@index');
@@ -74,4 +75,4 @@ Controller files are located in `Controllers` directory. Edit `config.php` const
 
 ## License
 
-MIT Licensed, <http://www.opensource.org/licenses/MIT>
+MIT Licensed: <http://www.opensource.org/licenses/MIT>
