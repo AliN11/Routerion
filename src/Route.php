@@ -61,12 +61,12 @@ class Route
 
     public function __construct(ExceptionsInterface $exception)
     {
-        $this -> exception = $exception;
+        $this->exception = $exception;
         $current_dir = dirname($_SERVER['SCRIPT_NAME']);
 
         // Remove query string
         $requested_url = preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']);
-        $this -> requestUrl = $this -> validateUrl(str_replace($current_dir, '', $requested_url));
+        $this->requestUrl = $this->validateUrl(str_replace($current_dir, '', $requested_url));
     }
 
 
@@ -101,16 +101,18 @@ class Route
             && in_array($method = strtoupper($_POST['_method']), ['PUT','DELETE'])
         ) ? $method : $_SERVER['REQUEST_METHOD'];
 
-        if($requestMethod <> $name){
+        if ($requestMethod <> $name) {
             return;
         }
-        if(in_array($name, $this -> validMethods)) {
-            $this -> requestMethod = $requestMethod;
+
+        if (in_array($name, $this->validMethods)) {
+            $this->requestMethod = $requestMethod;
             $route = $arguments[0];
             $action = $arguments[1];
-            $this -> definedRoutes[$requestMethod][$this -> validateUrl($route)] = $action;
+            $this->definedRoutes[$requestMethod][$this->validateUrl($route)] = $action;
+        } else {
+            throw new Exception('Method not allowed');
         }
-        else throw new Exception('Method not allowed');
     }
 
 
@@ -123,21 +125,18 @@ class Route
      */
     public function run()
     {
-        $requested_url = explode('/', $this -> requestUrl);
+        $requested_url = explode('/', $this->requestUrl);
 
-        if(!empty($this -> definedRoutes[$this -> requestMethod])){
-
-            foreach($this -> definedRoutes[$this -> requestMethod] as $route => $action) {
+        if (!empty($this->definedRoutes[$this->requestMethod])) {
+            foreach ($this->definedRoutes[$this->requestMethod] as $route => $action) {
                 $route = explode('/', $route);
                 $route_depth = count($route);
 
                 // Check for defined route parameters
-                for($i = 0; $i < $route_depth; $i++) {
-                    if(preg_match('/\{([\w?]+?)\}/',$route[$i])) {
-
-                        if(isset($requested_url[$i])) {
-                            array_push($this -> requestParameters, $requested_url[$i]);
-
+                for( $i = 0; $i < $route_depth; $i++) {
+                    if (preg_match('/\{([\w?]+?)\}/',$route[$i])) {
+                        if (isset($requested_url[$i])) {
+                            array_push($this->requestParameters, $requested_url[$i]);
                             // replace defined route parameters with peer request url parameter for final comparison
                             $route[$i] = $requested_url[$i];
                         }
@@ -145,8 +144,8 @@ class Route
                 }
 
                 // Check for unreplaced route parameters and delete them if are optional parameters (for final comparison)
-                for($j = 0; $j < $route_depth; $j++) {
-                    if(preg_match('/\{([\w]+?)\?}/', $route[$j])) {
+                for ($j = 0; $j < $route_depth; $j++) {
+                    if (preg_match('/\{([\w]+?)\?}/', $route[$j])) {
                         unset($route[$j]);
                     }
                 }
@@ -154,27 +153,25 @@ class Route
                 $route = implode('/', $route);
 
                 // Final comparision. Check requested url is equal to current checking route
-                if($route == $this -> requestUrl) {
-                    $this -> matched = true;
-                    if($action instanceof Closure) {
-                        return call_user_func_array($action, $this -> requestParameters);
-                    }
-                    elseif($this -> isController($action)) {
-                        return $this -> loadController($action);
-                    }
-                    else throw new Exception('Invalid action for route');
+                if ($route == $this->requestUrl) {
+                    $this->matched = true;
 
-                    // Route found, stop the operations
-                    break;
-                }
-                else {
-                    $this -> reset();
+                    if ($action instanceof Closure) {
+                        return call_user_func_array($action, $this->requestParameters);
+                    } else if($this->isController($action)) {
+                        return $this->loadController($action);
+                    } else {
+                        throw new Exception('Invalid action for route');
+                    }
+                    break; // Route found, stop the operations
+                } else {
+                    $this->reset();
                 }
             }
         }
 
-        if($this -> matched === false){
-            return $this -> exception -> notFound();
+        if ($this->matched === false) {
+            return $this->exception->notFound();
         }
     }
 
@@ -207,16 +204,19 @@ class Route
         $method = $action[1];
         $controller_file = realpath(CONTROLLER_PATH . '/' . $controller.'.php');
 
-        if($controller_file !== false) {
+        if ($controller_file !== false) {
             include $controller_file;
             $controller = CONTROLLER_NAMESPACE. '\\' . $controller;
             $controller = new $controller;
-            if(method_exists($controller, $method)) {
-                return call_user_func_array([$controller, $method], $this -> requestParameters);
+
+            if (method_exists($controller, $method)) {
+                return call_user_func_array([$controller, $method], $this->requestParameters);
+            } else {
+                throw new Exception("Method $method doesn\'t exist");
             }
-            else throw new Exception("Method $method doesn\'t exist");
+        } else {
+            throw new Exception('Couldn\'t find Controller file');
         }
-        else throw new Exception('Couldn\'t find Controller file');
     }
 
 
@@ -227,7 +227,7 @@ class Route
      */
     public function reset()
     {
-        $this -> requestParameters = [];
+        $this->requestParameters = [];
     }
 
 }
